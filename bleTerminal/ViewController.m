@@ -15,7 +15,15 @@
 @property (strong, nonatomic) IBOutlet UILabel *uuid;
 @property (strong, nonatomic) IBOutlet UIView *scanForDevicesView;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) IBOutlet UIView *deviceView;
 
+@property (strong, nonatomic) IBOutlet UILabel *rxDataLabel;
+
+@property (strong, nonatomic) IBOutlet UITextField *sendTextField;
+
+@property (strong, nonatomic) IBOutlet UITextView *rxTextView;
+
+- (IBAction)sendButton:(id)sender;
 
 @end
 
@@ -124,6 +132,37 @@
         }
 }
 
+- (void)sendValue:(NSString *) str
+{
+    for (CBService * service in [_selectedPeripheral services])
+    {
+        for (CBCharacteristic * characteristic in [service characteristics])
+        {
+            // Create a string with all the data, formatted in ASCII.
+            //NSString * strData = [[NSString alloc] initWithData:myData encoding:NSASCIIStringEncoding];
+            // Add the end-of-transmission character to allow the
+            // Arduino to parse the string
+            //str = [NSString stringWithFormat:@"%@:", strData];
+            
+            // Write the str variable with all our movement data.
+            [_selectedPeripheral writeValue:[str dataUsingEncoding:NSUTF8StringEncoding]
+                          forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
+            NSLog(str);
+        }
+    }
+}
+
+
+
+-(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
+{
+    NSString * str = [[NSString alloc] initWithData:[characteristic value] encoding:NSUTF8StringEncoding];
+    
+    
+    self.rxTextView.text = [NSString stringWithFormat:@"%@%@", self.rxTextView.text, str];
+    [self.rxTextView scrollRangeToVisible:NSMakeRange([self.rxTextView.text length], 0)];
+}
+
 
 # pragma mark - table controller
 ////////////////////// Device Table View //////////////////
@@ -138,6 +177,8 @@
     //This counts how many items are in the deviceList array.
     return [self.devices count];
 }
+
+
 
 
 - (UITableViewCell *)tableView: (UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -219,14 +260,11 @@
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:1.0];
             [UIView commitAnimations];
+            self.deviceView.hidden = true;
         }
     }
 }
 
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -234,5 +272,16 @@
     return 60;
 }
 - (IBAction)scanButton:(id)sender {
+    if(self.deviceView.hidden == true){
+        self.deviceView.hidden = false;
+    }
+    else
+    {
+       self.deviceView.hidden = true;
+    }
+}
+
+- (IBAction)sendButton:(id)sender {
+    [self sendValue:@"q"];
 }
 @end

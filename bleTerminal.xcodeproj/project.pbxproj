@@ -416,6 +416,7 @@
 				2085B32719FEFAC6003C4F46 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2085B32819FEFAC6003C4F46 /* Build configuration list for PBXNativeTarget "bleTerminalTests" */ = {
 			isa = XCConfigurationList;
@@ -424,6 +425,7 @@
 				2085B32A19FEFAC6003C4F46 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
