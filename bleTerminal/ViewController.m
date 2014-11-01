@@ -24,6 +24,7 @@
 @property (strong, nonatomic) IBOutlet UITextView *rxTextView;
 
 - (IBAction)sendButton:(id)sender;
+@property (strong, nonatomic) IBOutlet UITextField *sendTextBox;
 
 @end
 
@@ -142,7 +143,7 @@
             //NSString * strData = [[NSString alloc] initWithData:myData encoding:NSASCIIStringEncoding];
             // Add the end-of-transmission character to allow the
             // Arduino to parse the string
-            //str = [NSString stringWithFormat:@"%@:", strData];
+            str = [NSString stringWithFormat:@"%@\r", str];
             
             // Write the str variable with all our movement data.
             [_selectedPeripheral writeValue:[str dataUsingEncoding:NSUTF8StringEncoding]
@@ -282,6 +283,6 @@
 }
 
 - (IBAction)sendButton:(id)sender {
-    [self sendValue:@"q"];
+    [self sendValue:self.sendTextBox.text];
 }
 @end
