@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2004D6F81A048B9900E57706 /* bitwise.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2004D6F71A048B9900E57706 /* bitwise.ttf */; };
+		2004D6F91A048B9900E57706 /* bitwise.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2004D6F71A048B9900E57706 /* bitwise.ttf */; };
 		2085B30819FEFAC5003C4F46 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085B30719FEFAC5003C4F46 /* main.m */; };
 		2085B30B19FEFAC6003C4F46 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085B30A19FEFAC6003C4F46 /* AppDelegate.m */; };
 		2085B30E19FEFAC6003C4F46 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085B30D19FEFAC6003C4F46 /* ViewController.m */; };
 		2085B31119FEFAC6003C4F46 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2085B30F19FEFAC6003C4F46 /* Main.storyboard */; };
 		2085B31319FEFAC6003C4F46 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2085B31219FEFAC6003C4F46 /* Images.xcassets */; };
-		2085B31619FEFAC6003C4F46 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2085B31419FEFAC6003C4F46 /* LaunchScreen.xib */; };
 		2085B32219FEFAC6003C4F46 /* bleTerminalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085B32119FEFAC6003C4F46 /* bleTerminalTests.m */; };
+		20B03ECA1A0AFBA70005AE16 /* UIView+blurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B03EC91A0AFBA70005AE16 /* UIView+blurEffect.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2004D6F71A048B9900E57706 /* bitwise.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = bitwise.ttf; sourceTree = "<group>"; };
 		2085B30219FEFAC5003C4F46 /* bleTerminal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bleTerminal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2085B30619FEFAC5003C4F46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2085B30719FEFAC5003C4F46 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -36,10 +39,11 @@
 		2085B30D19FEFAC6003C4F46 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2085B31019FEFAC6003C4F46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2085B31219FEFAC6003C4F46 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		2085B31519FEFAC6003C4F46 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		2085B31B19FEFAC6003C4F46 /* bleTerminalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bleTerminalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2085B32019FEFAC6003C4F46 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2085B32119FEFAC6003C4F46 /* bleTerminalTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bleTerminalTests.m; sourceTree = "<group>"; };
+		20B03EC81A0AFBA70005AE16 /* UIView+blurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+blurEffect.h"; sourceTree = "<group>"; };
+		20B03EC91A0AFBA70005AE16 /* UIView+blurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+blurEffect.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 		2085B2F919FEFAC5003C4F46 = {
 			isa = PBXGroup;
 			children = (
+				20B03EC81A0AFBA70005AE16 /* UIView+blurEffect.h */,
+				20B03EC91A0AFBA70005AE16 /* UIView+blurEffect.m */,
 				2085B30419FEFAC5003C4F46 /* bleTerminal */,
 				2085B31E19FEFAC6003C4F46 /* bleTerminalTests */,
 				2085B30319FEFAC5003C4F46 /* Products */,
@@ -87,7 +93,6 @@
 				2085B30D19FEFAC6003C4F46 /* ViewController.m */,
 				2085B30F19FEFAC6003C4F46 /* Main.storyboard */,
 				2085B31219FEFAC6003C4F46 /* Images.xcassets */,
-				2085B31419FEFAC6003C4F46 /* LaunchScreen.xib */,
 				2085B30519FEFAC5003C4F46 /* Supporting Files */,
 			);
 			path = bleTerminal;
@@ -96,6 +101,7 @@
 		2085B30519FEFAC5003C4F46 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2004D6F71A048B9900E57706 /* bitwise.ttf */,
 				2085B30619FEFAC5003C4F46 /* Info.plist */,
 				2085B30719FEFAC5003C4F46 /* main.m */,
 			);
@@ -200,7 +206,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2085B31119FEFAC6003C4F46 /* Main.storyboard in Resources */,
-				2085B31619FEFAC6003C4F46 /* LaunchScreen.xib in Resources */,
+				2004D6F81A048B9900E57706 /* bitwise.ttf in Resources */,
 				2085B31319FEFAC6003C4F46 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,6 +215,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2004D6F91A048B9900E57706 /* bitwise.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,6 +226,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B03ECA1A0AFBA70005AE16 /* UIView+blurEffect.m in Sources */,
 				2085B30E19FEFAC6003C4F46 /* ViewController.m in Sources */,
 				2085B30B19FEFAC6003C4F46 /* AppDelegate.m in Sources */,
 				2085B30819FEFAC5003C4F46 /* main.m in Sources */,
@@ -250,14 +258,6 @@
 				2085B31019FEFAC6003C4F46 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		2085B31419FEFAC6003C4F46 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2085B31519FEFAC6003C4F46 /* Base */,
-			);
-			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

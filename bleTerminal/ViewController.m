@@ -9,22 +9,24 @@
 #import "ViewController.h"
 
 @interface ViewController ()
-- (IBAction)scanButton:(id)sender;
+
 @property (strong, nonatomic) IBOutlet UIButton *scanButton;
-@property (strong, nonatomic) IBOutlet UILabel *device;
-@property (strong, nonatomic) IBOutlet UILabel *uuid;
+
+// bleTerminal Blue B: .976471 R:.015686 G:.270588
+@property (strong, nonatomic) IBOutlet UIView *mainView;
+@property (strong, nonatomic) IBOutlet UIView *topBarView;
+@property (strong, nonatomic) IBOutlet UIView *tableViewContainer;
 @property (strong, nonatomic) IBOutlet UIView *scanForDevicesView;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIView *deviceView;
-
-@property (strong, nonatomic) IBOutlet UILabel *rxDataLabel;
-
-@property (strong, nonatomic) IBOutlet UITextField *sendTextField;
-
 @property (strong, nonatomic) IBOutlet UITextView *rxTextView;
-
-- (IBAction)sendButton:(id)sender;
 @property (strong, nonatomic) IBOutlet UITextField *sendTextBox;
+@property (strong, nonatomic) IBOutlet UIView *rxTextViewFrame;
+
+- (IBAction)clearTerminalButton:(id)sender;
+- (IBAction)sendButton:(id)sender;
+-(float)mapNumber: (float)x minimumIn:(float)minIn maximumIn:(float)maxIn minimumOut:(float)minOut maximumOut:(float)maxOut;
+
 
 @end
 
@@ -34,6 +36,53 @@
     [super viewDidLoad];
  
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+
+    self.rxTextViewFrame.layer.borderColor = [UIColor colorWithRed:.015686 green:.270588 blue:.976471 alpha:1].CGColor;
+    self.rxTextViewFrame.layer.backgroundColor = [UIColor colorWithRed:.015686 green:.270588 blue:.976471 alpha:1].CGColor;
+    
+    self.rxTextViewFrame.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.rxTextViewFrame.layer.shadowOpacity = 0.5f;
+    self.rxTextViewFrame.layer.shadowOffset = CGSizeMake(20.0f, 20.0f);
+    self.rxTextViewFrame.layer.shadowRadius = 5.0f;
+    self.rxTextViewFrame.layer.masksToBounds = NO;
+    
+    self.rxTextViewFrame.layer.cornerRadius = 30;
+    self.rxTextViewFrame.layer.borderWidth = 3;
+
+    
+    
+    /*
+    // Setup shadow for Devices TableView.
+    self.devicesView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.devicesView.layer.shadowOpacity = 0.5f;
+    self.devicesView.layer.shadowOffset = CGSizeMake(20.0f, 20.0f);
+    self.devicesView.layer.shadowRadius = 5.0f;
+    self.devicesView.layer.masksToBounds = NO;
+    
+    // Setup border for view backdrop.
+    //self.devicesView.layer.cornerRadius = 30;
+    self.devicesView.layer.borderWidth = 20.0;
+    self.devicesView.layer.borderColor = [UIColor colorWithRed:.10588 green:.25098 blue:.46666 alpha:1].CGColor;
+    
+    // Set the steer slider's thumb control image.
+    [self.steerSlider setThumbImage:[UIImage imageNamed:@"track-thumb.png"] forState:UIControlStateNormal];
+    // This is a redneck way of removing the steer slider track.
+    [self.steerSlider setMaximumTrackImage:[UIImage alloc] forState:UIControlStateNormal];
+    
+    // Do the same for the acceleration control.
+    [self.accelerationSlider setThumbImage:[UIImage imageNamed:@"track-thumb.png"] forState:UIControlStateNormal];
+    [self.accelerationSlider setMaximumTrackImage:[UIImage alloc] forState:UIControlStateNormal];
+    
+    // Turns the acceleration slider vertical.
+    self.accelerationSlider.transform = CGAffineTransformMakeRotation(M_PI_2);
+    self.steerSlider.transform = CGAffineTransformMakeRotation(M_PI_2);
+    
+    //Let's set a timer to refresh RSSI.
+    self.rssiTimer = [NSTimer scheduledTimerWithTimeInterval:.1
+                                                      target:self
+                                                    selector:@selector(steerSliderTick)
+                                                    userInfo:nil
+                                                     repeats:YES];*/
 }
 
 - (void)didReceiveMemoryWarning {
@@ -146,9 +195,9 @@
             str = [NSString stringWithFormat:@"%@\r", str];
             
             // Write the str variable with all our movement data.
-            [_selectedPeripheral writeValue:[str dataUsingEncoding:NSUTF8StringEncoding]
+            [_selectedPeripheral writeValue:[str dataUsingEncoding:NSASCIIStringEncoding]
                           forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
-            NSLog(str);
+            //NSLog(@"%2x", str);
         }
     }
 }
@@ -157,11 +206,12 @@
 
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error
 {
-    NSString * str = [[NSString alloc] initWithData:[characteristic value] encoding:NSUTF8StringEncoding];
+    NSString * joe = [[NSString alloc] initWithData:[characteristic value] encoding:NSASCIIStringEncoding];
     
     
-    self.rxTextView.text = [NSString stringWithFormat:@"%@%@", self.rxTextView.text, str];
+    self.rxTextView.text = [NSString stringWithFormat:@"%@%@", self.rxTextView.text, joe];
     [self.rxTextView scrollRangeToVisible:NSMakeRange([self.rxTextView.text length], 0)];
+    //NSLog(@"%@", joe);
 }
 
 
@@ -207,7 +257,7 @@
     // This is a handle for the tableView.
     static NSString * bleTerminal = @"bleTerminal";
     
-    NSLog(@"%@", bleTerminal);
+    //NSLog(@"%@", bleTerminal);
     // Get cell objects.;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:bleTerminal];
     
@@ -284,5 +334,28 @@
 
 - (IBAction)sendButton:(id)sender {
     [self sendValue:self.sendTextBox.text];
+    //NSLog(@"%@", self.sendTextBox.text);
+    //self.sendTextBox.text = @"";
 }
+- (IBAction)clearTerminalButton:(id)sender {
+    self.rxTextView.text = @"";
+    //self.rxTextView.font = [UIFont fontWithName:@"arial" size:40];
+
+    ViewController *mappedNumber = [[ViewController alloc] init];
+    float de;
+    de = [mappedNumber mapNumber:4 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    NSLog(@"%f", de);
+}
+
+-(void)updateBlur
+{
+    UIImage *image = [self.view.superview convertViewToImage];
+    
+}
+
+-(float)mapNumber: (float)x minimumIn:(float)minIn maximumIn:(float)maxIn minimumOut:(float)minOut maximumOut:(float)maxOut;
+{
+    return ((x - minIn) * (maxOut - minOut)/(maxIn - minIn) + minOut);
+}
+
 @end
