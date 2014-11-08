@@ -8,6 +8,12 @@
 
 #import "ViewController.h"
 
+// Color schemes.
+#define mainBlue_B .976471
+#define mainBlue_R .015686
+#define mainBlue_G .270588
+
+
 @interface ViewController ()
 
 @property (strong, nonatomic) IBOutlet UIButton *scanButton;
@@ -22,6 +28,9 @@
 @property (strong, nonatomic) IBOutlet UITextView *rxTextView;
 @property (strong, nonatomic) IBOutlet UITextField *sendTextBox;
 @property (strong, nonatomic) IBOutlet UIView *rxTextViewFrame;
+@property (strong, nonatomic) IBOutlet UIButton *clearButton;
+@property (strong, nonatomic) IBOutlet UIButton *sendButton;
+
 
 - (IBAction)clearTerminalButton:(id)sender;
 - (IBAction)sendButton:(id)sender;
@@ -35,21 +44,52 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
  
+    
+    ViewController *mappedNumber = [[ViewController alloc] init];
+    float de;
+    de = [mappedNumber mapNumber:4 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    
+    float bgB = [mappedNumber mapNumber:127 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    float bgG = [mappedNumber mapNumber:67 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    float bgR = [mappedNumber mapNumber:44 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    
+    
+    float textB = [mappedNumber mapNumber:104 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    float textG = [mappedNumber mapNumber:206 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    float textR = [mappedNumber mapNumber:245 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+    
+    // Let's make the BLE happen.
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
 
-    self.rxTextViewFrame.layer.borderColor = [UIColor colorWithRed:.015686 green:.270588 blue:.976471 alpha:1].CGColor;
-    self.rxTextViewFrame.layer.backgroundColor = [UIColor colorWithRed:.015686 green:.270588 blue:.976471 alpha:1].CGColor;
-    
+    // Main view UI setup.
+    self.mainView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+
+    // Table view UI.
+    self.tableViewContainer.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+
+    self.tableView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+
+    // RX text view UI.
+    self.rxTextView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    self.rxTextViewFrame.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    self.rxTextViewFrame.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.rxTextViewFrame.layer.shadowColor = [UIColor blackColor].CGColor;
+    // Shadow and border.
     self.rxTextViewFrame.layer.shadowOpacity = 0.5f;
-    self.rxTextViewFrame.layer.shadowOffset = CGSizeMake(20.0f, 20.0f);
+    self.rxTextViewFrame.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
     self.rxTextViewFrame.layer.shadowRadius = 5.0f;
     self.rxTextViewFrame.layer.masksToBounds = NO;
-    
     self.rxTextViewFrame.layer.cornerRadius = 30;
     self.rxTextViewFrame.layer.borderWidth = 3;
-
+    [self.rxTextView setTextColor:[UIColor colorWithRed:textR green:textG blue:textB alpha:1]];
     
+    // Send text box UI.
+    self.sendTextBox.layer.shadowOpacity = 0.5f;
+    self.sendTextBox.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.sendTextBox.layer.shadowRadius = 5.0f;
+    self.sendTextBox.layer.masksToBounds = NO;
+    self.sendTextBox.layer.cornerRadius = 30;
+    self.sendTextBox.layer.borderWidth = 3;
     
     /*
     // Setup shadow for Devices TableView.
