@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bleTerminal/ViewController.m"
-            timestampString = "437151893.104776"
+            timestampString = "437159609.461177"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
             landmarkName = "-sendValue:"
             landmarkType = "5">
          </BreakpointContent>

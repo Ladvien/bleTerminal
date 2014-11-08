@@ -13,6 +13,7 @@
 #define mainBlue_R .015686
 #define mainBlue_G .270588
 
+#define cornerRadiusConst 3.0
 
 @interface ViewController ()
 
@@ -30,6 +31,7 @@
 @property (strong, nonatomic) IBOutlet UIView *rxTextViewFrame;
 @property (strong, nonatomic) IBOutlet UIButton *clearButton;
 @property (strong, nonatomic) IBOutlet UIButton *sendButton;
+@property (strong, nonatomic) IBOutlet UIView *sendTextFrame;
 
 
 - (IBAction)clearTerminalButton:(id)sender;
@@ -79,17 +81,20 @@
     self.rxTextViewFrame.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
     self.rxTextViewFrame.layer.shadowRadius = 5.0f;
     self.rxTextViewFrame.layer.masksToBounds = NO;
-    self.rxTextViewFrame.layer.cornerRadius = 30;
+    self.rxTextViewFrame.layer.cornerRadius = cornerRadiusConst;
     self.rxTextViewFrame.layer.borderWidth = 3;
     [self.rxTextView setTextColor:[UIColor colorWithRed:textR green:textG blue:textB alpha:1]];
     
     // Send text box UI.
-    self.sendTextBox.layer.shadowOpacity = 0.5f;
-    self.sendTextBox.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
-    self.sendTextBox.layer.shadowRadius = 5.0f;
-    self.sendTextBox.layer.masksToBounds = NO;
-    self.sendTextBox.layer.cornerRadius = 30;
-    self.sendTextBox.layer.borderWidth = 3;
+    self.sendTextFrame.layer.shadowOpacity = 0.5f;
+    self.sendTextFrame.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.sendTextFrame.layer.shadowRadius = 5.0f;
+    self.sendTextFrame.layer.masksToBounds = NO;
+    self.sendTextFrame.layer.cornerRadius = cornerRadiusConst;
+    self.sendTextFrame.layer.borderWidth = 3;
+    self.sendTextFrame.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.sendTextFrame.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    [self.sendTextBox setTextColor:[UIColor colorWithRed:textR green:textG blue:textB alpha:1]];
     
     /*
     // Setup shadow for Devices TableView.
