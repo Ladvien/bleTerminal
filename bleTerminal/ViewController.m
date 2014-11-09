@@ -7,13 +7,16 @@
 //
 
 #import "ViewController.h"
+#import "AppDelegate.h"
+
 
 // Color schemes.
 #define mainBlue_B .976471
 #define mainBlue_R .015686
 #define mainBlue_G .270588
 
-#define cornerRadiusConst 3.0
+// Corner roundness.
+#define cornerRadiusConst 10.0
 
 @interface ViewController ()
 
@@ -32,20 +35,32 @@
 @property (strong, nonatomic) IBOutlet UIButton *clearButton;
 @property (strong, nonatomic) IBOutlet UIButton *sendButton;
 @property (strong, nonatomic) IBOutlet UIView *sendTextFrame;
+@property (strong, nonatomic) IBOutlet UILabel *connectedLabel;
+@property (strong, nonatomic) NSTimer *rssiTimer;
+
 
 
 - (IBAction)clearTerminalButton:(id)sender;
 - (IBAction)sendButton:(id)sender;
 -(float)mapNumber: (float)x minimumIn:(float)minIn maximumIn:(float)maxIn minimumOut:(float)minOut maximumOut:(float)maxOut;
-
+-(id)init;
+-(void)enteredBackground;
+-(void)willTerminate;
 
 @end
 
 @implementation ViewController
 
+
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
  
+    // Let's get notifications for background and termination.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enteredBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminate) name:UIApplicationWillTerminateNotification object:nil];
     
     ViewController *mappedNumber = [[ViewController alloc] init];
     float de;
@@ -95,7 +110,30 @@
     self.sendTextFrame.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.sendTextFrame.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
     [self.sendTextBox setTextColor:[UIColor colorWithRed:textR green:textG blue:textB alpha:1]];
+
+    // Clear Button
+    [self.sendButton setEnabled:YES ]; // disables
+    [self.sendButton setTitle:@"Send" forState:UIControlStateNormal]; // sets text
+    self.sendButton.layer.shadowOpacity = 0.5f;
+    self.sendButton.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.sendButton.layer.shadowRadius = 5.0f;
+    self.sendButton.layer.borderWidth = 1;
+    self.sendButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.sendButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
     
+    // Clear Button
+    [self.clearButton setEnabled:YES ]; // disables
+    [self.clearButton setTitle:@"Clear" forState:UIControlStateNormal]; // sets text
+    self.clearButton.layer.shadowOpacity = 0.5f;
+    self.clearButton.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.clearButton.layer.shadowRadius = 5.0f;
+    self.clearButton.layer.borderWidth = 1;
+    self.clearButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.clearButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    [self.connectedLabel setTextColor:[UIColor redColor]];
+
+
+    //self.clearButton.layer. = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     /*
     // Setup shadow for Devices TableView.
     self.devicesView.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -184,6 +222,10 @@
     // Set the peripheral method's discoverServices to nil,
     // this searches for all services, it's slower but inclusive.
     [peripheral discoverServices:nil];
+    [self.connectedLabel setTextColor:[UIColor greenColor]];
+    self.connectedLabel.text = [NSString stringWithFormat:@"Connected: %@", self.selectedPeripheral.name];
+    
+    
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
@@ -403,4 +445,21 @@
     return ((x - minIn) * (maxOut - minOut)/(maxIn - minIn) + minOut);
 }
 
+- (void)disconnectPeripheral
+{
+    [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
+    NSLog(@"Disconnect: %@", _selectedPeripheral);
+}
+
+-(void)enteredBackground
+{
+    [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
+    NSLog(@"Background");
+}
+
+-(void)willTerminate
+{
+    [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
+    NSLog(@"Will terminate");
+}
 @end

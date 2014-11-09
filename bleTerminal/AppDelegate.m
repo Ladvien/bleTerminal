@@ -7,9 +7,10 @@
 //
 
 #import "AppDelegate.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) ViewController *someClassObject;
 @end
 
 @implementation AppDelegate
@@ -26,8 +27,12 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    //self.someClassObject = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
+    //[self.someClassObject disconnectPeripheral];
+    //[self.someClassObject.centralManager cancelPeripheralConnection:self.someClassObject.selectedPeripheral];
+    //NSLog(@"%@", self.someClassObject.selectedPeripheral);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"didEnterBackground" object:nil userInfo:nil];
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -40,6 +45,8 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+
+    
 }
 
 @end

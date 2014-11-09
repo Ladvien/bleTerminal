@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "UIView+blurEffect.h"
-
+#import "AppDelegate.h"
 
 
 @interface ViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate, UITableViewDelegate, UITableViewDataSource>
@@ -21,12 +21,13 @@
 // Instance method, used to act when a peripheral is discovered.
 @property (strong, nonatomic) CBPeripheral *discoveredPeripheral;
 // Instance method, used to act when a peripheral is selected to connect.
-@property (strong, nonatomic)CBPeripheral *selectedPeripheral;
+@property (nonatomic) CBPeripheral *selectedPeripheral;
 // Holds UUID.
 @property (readonly, nonatomic) CFUUIDRef UUID;
 // Stores peripheral characteristics.
 @property (strong, nonatomic) CBCharacteristic *characteristics;
 @property (strong, nonatomic) NSMutableData *data;
 
+- (void)disconnectPeripheral;
 @end
 
