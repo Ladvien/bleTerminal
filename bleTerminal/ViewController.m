@@ -38,22 +38,22 @@
 @property (strong, nonatomic) IBOutlet UILabel *connectedLabel;
 @property (strong, nonatomic) NSTimer *rssiTimer;
 
-
+@property (strong, nonatomic) IBOutlet NKOColorPickerView *pickerView;
 
 - (IBAction)clearTerminalButton:(id)sender;
 - (IBAction)sendButton:(id)sender;
+
 -(float)mapNumber: (float)x minimumIn:(float)minIn maximumIn:(float)maxIn minimumOut:(float)minOut maximumOut:(float)maxOut;
+
 -(id)init;
+
 -(void)enteredBackground;
 -(void)willTerminate;
+-(void)updateColor;
 
 @end
 
 @implementation ViewController
-
-
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -74,6 +74,21 @@
     float textB = [mappedNumber mapNumber:104 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
     float textG = [mappedNumber mapNumber:206 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
     float textR = [mappedNumber mapNumber:245 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
+
+    //////////////////////////////////////////////////////////
+    
+    //Color did change block declaration
+    UIColor *backGroundColor;
+    
+    self.pickerView.didChangeColorBlock = ^(UIColor *color){
+        self.backGroundColor = color;
+        [self updateColor];
+    };
+    
+
+
+    
+    //////////////////////////////////////////////////////////
     
     // Let's make the BLE happen.
     _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
@@ -130,36 +145,23 @@
     self.clearButton.layer.borderWidth = 1;
     self.clearButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.clearButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
-    [self.connectedLabel setTextColor:[UIColor redColor]];
+    [self.connectedLabel setTextColor:backGroundColor];
 
-
-    //self.clearButton.layer. = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
-    /*
+        //self.clearButton.layer. = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    
     // Setup shadow for Devices TableView.
-    self.devicesView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.devicesView.layer.shadowOpacity = 0.5f;
-    self.devicesView.layer.shadowOffset = CGSizeMake(20.0f, 20.0f);
-    self.devicesView.layer.shadowRadius = 5.0f;
-    self.devicesView.layer.masksToBounds = NO;
+    self.deviceView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.deviceView.layer.shadowOpacity = 0.5f;
+    self.deviceView.layer.shadowOffset = CGSizeMake(20.0f, 20.0f);
+    self.deviceView.layer.shadowRadius = 5.0f;
+    self.deviceView.layer.masksToBounds = NO;
     
     // Setup border for view backdrop.
     //self.devicesView.layer.cornerRadius = 30;
-    self.devicesView.layer.borderWidth = 20.0;
-    self.devicesView.layer.borderColor = [UIColor colorWithRed:.10588 green:.25098 blue:.46666 alpha:1].CGColor;
+    self.deviceView.layer.borderWidth = 20.0;
+    self.deviceView.layer.borderColor = [UIColor colorWithRed:.10588 green:.25098 blue:.46666 alpha:1].CGColor;
     
-    // Set the steer slider's thumb control image.
-    [self.steerSlider setThumbImage:[UIImage imageNamed:@"track-thumb.png"] forState:UIControlStateNormal];
-    // This is a redneck way of removing the steer slider track.
-    [self.steerSlider setMaximumTrackImage:[UIImage alloc] forState:UIControlStateNormal];
-    
-    // Do the same for the acceleration control.
-    [self.accelerationSlider setThumbImage:[UIImage imageNamed:@"track-thumb.png"] forState:UIControlStateNormal];
-    [self.accelerationSlider setMaximumTrackImage:[UIImage alloc] forState:UIControlStateNormal];
-    
-    // Turns the acceleration slider vertical.
-    self.accelerationSlider.transform = CGAffineTransformMakeRotation(M_PI_2);
-    self.steerSlider.transform = CGAffineTransformMakeRotation(M_PI_2);
-    
+    /*
     //Let's set a timer to refresh RSSI.
     self.rssiTimer = [NSTimer scheduledTimerWithTimeInterval:.1
                                                       target:self
@@ -179,7 +181,6 @@
     if (central.state != CBCentralManagerStatePoweredOn) {
         // Turn on Bluetooth error msg.
         return;
-        
     }
     
     // Device is on, let's scan for peripherals.
@@ -301,6 +302,11 @@
     //NSLog(@"%@", joe);
 }
 
+-(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    self.connectedLabel.text = [NSString stringWithFormat:@"Not Connected"];
+    [self.connectedLabel setTextColor:[UIColor redColor]];
+}
 
 # pragma mark - table controller
 ////////////////////// Device Table View //////////////////
@@ -391,7 +397,8 @@
         if (_selectedPeripheral)
         {
             // Close current connection.
-            [_centralManager cancelPeripheralConnection:_selectedPeripheral];
+            [self disconnectPeripheral];
+            
             // Connect to selected peripheral.
             [_centralManager connectPeripheral:_selectedPeripheral options:nil];
             // Hide the devices list.
@@ -427,11 +434,11 @@
 - (IBAction)clearTerminalButton:(id)sender {
     self.rxTextView.text = @"";
     //self.rxTextView.font = [UIFont fontWithName:@"arial" size:40];
-
     ViewController *mappedNumber = [[ViewController alloc] init];
     float de;
     de = [mappedNumber mapNumber:4 minimumIn:0 maximumIn:255 minimumOut:0 maximumOut:1];
     NSLog(@"%f", de);
+
 }
 
 -(void)updateBlur
@@ -447,19 +454,39 @@
 
 - (void)disconnectPeripheral
 {
+    NSLog(@"RUN");
     [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
-    NSLog(@"Disconnect: %@", _selectedPeripheral);
 }
+
 
 -(void)enteredBackground
 {
-    [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
+    [self disconnectPeripheral];
     NSLog(@"Background");
 }
 
 -(void)willTerminate
 {
-    [self.centralManager cancelPeripheralConnection:_selectedPeripheral];
+    [self disconnectPeripheral];
     NSLog(@"Will terminate");
+}
+
+-(void)updateColor
+{
+    [self.mainView setBackgroundColor:self.backGroundColor];
+    [self.tableView setBackgroundColor:self.backGroundColor];
+    [self.tableViewContainer setBackgroundColor:self.backGroundColor];
+    [self.rxTextView setBackgroundColor:self.backGroundColor];
+    [self.rxTextViewFrame setBackgroundColor:self.backGroundColor];
+    [self.clearButton setBackgroundColor:self.backGroundColor];
+    [self.sendButton setBackgroundColor:self.backGroundColor];
+    [self.sendTextBox setBackgroundColor:self.backGroundColor];
+    [self.sendTextFrame setBackgroundColor:self.backGroundColor];
+    [self.sendTextFrame setBackgroundColor:self.backGroundColor];
+    [self.deviceView setBackgroundColor:self.backGroundColor];
+    [self.tableView setBackgroundColor:self.backGroundColor];
+    self.tableView.layer.borderColor = self.backGroundColor.CGColor;
+    self.rxTextViewFrame.layer.borderColor = self.backGroundColor.CGColor;
+    NSLog(@"%@", self.backGroundColor.CGColor);
 }
 @end

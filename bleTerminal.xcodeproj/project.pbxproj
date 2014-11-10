@@ -16,6 +16,10 @@
 		2085B31319FEFAC6003C4F46 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2085B31219FEFAC6003C4F46 /* Images.xcassets */; };
 		2085B32219FEFAC6003C4F46 /* bleTerminalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2085B32119FEFAC6003C4F46 /* bleTerminalTests.m */; };
 		20B03ECA1A0AFBA70005AE16 /* UIView+blurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B03EC91A0AFBA70005AE16 /* UIView+blurEffect.m */; };
+		20D9F9D01A1028F8003D3EEC /* nko_brightness_guide.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D9F9CB1A1028F8003D3EEC /* nko_brightness_guide.png */; };
+		20D9F9D11A1028F8003D3EEC /* nko_brightness_guide@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D9F9CC1A1028F8003D3EEC /* nko_brightness_guide@2x.png */; };
+		20D9F9D21A1028F8003D3EEC /* nko_colormap.png in Resources */ = {isa = PBXBuildFile; fileRef = 20D9F9CD1A1028F8003D3EEC /* nko_colormap.png */; };
+		20D9F9D31A1028F8003D3EEC /* NKOColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D9F9CF1A1028F8003D3EEC /* NKOColorPickerView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +48,11 @@
 		2085B32119FEFAC6003C4F46 /* bleTerminalTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bleTerminalTests.m; sourceTree = "<group>"; };
 		20B03EC81A0AFBA70005AE16 /* UIView+blurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+blurEffect.h"; sourceTree = "<group>"; };
 		20B03EC91A0AFBA70005AE16 /* UIView+blurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+blurEffect.m"; sourceTree = "<group>"; };
+		20D9F9CB1A1028F8003D3EEC /* nko_brightness_guide.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nko_brightness_guide.png; sourceTree = "<group>"; };
+		20D9F9CC1A1028F8003D3EEC /* nko_brightness_guide@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nko_brightness_guide@2x.png"; sourceTree = "<group>"; };
+		20D9F9CD1A1028F8003D3EEC /* nko_colormap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nko_colormap.png; sourceTree = "<group>"; };
+		20D9F9CE1A1028F8003D3EEC /* NKOColorPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKOColorPickerView.h; sourceTree = "<group>"; };
+		20D9F9CF1A1028F8003D3EEC /* NKOColorPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKOColorPickerView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +96,7 @@
 		2085B30419FEFAC5003C4F46 /* bleTerminal */ = {
 			isa = PBXGroup;
 			children = (
+				20D9F9C91A1028E5003D3EEC /* iOS_Color_Picker */,
 				2085B30919FEFAC6003C4F46 /* AppDelegate.h */,
 				2085B30A19FEFAC6003C4F46 /* AppDelegate.m */,
 				2085B30C19FEFAC6003C4F46 /* ViewController.h */,
@@ -123,6 +133,26 @@
 				2085B32019FEFAC6003C4F46 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		20D9F9C91A1028E5003D3EEC /* iOS_Color_Picker */ = {
+			isa = PBXGroup;
+			children = (
+				20D9F9CA1A1028F8003D3EEC /* Assets */,
+				20D9F9CE1A1028F8003D3EEC /* NKOColorPickerView.h */,
+				20D9F9CF1A1028F8003D3EEC /* NKOColorPickerView.m */,
+			);
+			name = iOS_Color_Picker;
+			sourceTree = "<group>";
+		};
+		20D9F9CA1A1028F8003D3EEC /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				20D9F9CB1A1028F8003D3EEC /* nko_brightness_guide.png */,
+				20D9F9CC1A1028F8003D3EEC /* nko_brightness_guide@2x.png */,
+				20D9F9CD1A1028F8003D3EEC /* nko_colormap.png */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,7 +235,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20D9F9D01A1028F8003D3EEC /* nko_brightness_guide.png in Resources */,
 				2085B31119FEFAC6003C4F46 /* Main.storyboard in Resources */,
+				20D9F9D11A1028F8003D3EEC /* nko_brightness_guide@2x.png in Resources */,
+				20D9F9D21A1028F8003D3EEC /* nko_colormap.png in Resources */,
 				2004D6F81A048B9900E57706 /* bitwise.ttf in Resources */,
 				2085B31319FEFAC6003C4F46 /* Images.xcassets in Resources */,
 			);
@@ -229,6 +262,7 @@
 				20B03ECA1A0AFBA70005AE16 /* UIView+blurEffect.m in Sources */,
 				2085B30E19FEFAC6003C4F46 /* ViewController.m in Sources */,
 				2085B30B19FEFAC6003C4F46 /* AppDelegate.m in Sources */,
+				20D9F9D31A1028F8003D3EEC /* NKOColorPickerView.m in Sources */,
 				2085B30819FEFAC5003C4F46 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

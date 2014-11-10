@@ -10,7 +10,8 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "UIView+blurEffect.h"
 #import "AppDelegate.h"
-
+#import "NKOColorPickerView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface ViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate, UITableViewDelegate, UITableViewDataSource>
 
@@ -27,7 +28,7 @@
 // Stores peripheral characteristics.
 @property (strong, nonatomic) CBCharacteristic *characteristics;
 @property (strong, nonatomic) NSMutableData *data;
-
+@property (weak, nonatomic) UIColor *backGroundColor;
 - (void)disconnectPeripheral;
 @end
 
