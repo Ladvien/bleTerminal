@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "bleTerminal/ViewController.m"
-            timestampString = "437363504.641424"
+            timestampString = "437372081.547105"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "298"
-            endingLineNumber = "298"
+            startingLineNumber = "352"
+            endingLineNumber = "352"
             landmarkName = "-peripheral:didDiscoverDescriptorsForCharacteristic:error:"
             landmarkType = "5">
          </BreakpointContent>
