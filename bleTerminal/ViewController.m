@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "AppDelegate.h"
 
-
+// bleTerminal Blue B: .976471 R:.015686 G:.270588
 // Color schemes.
 #define mainBlue_B .976471
 #define mainBlue_R .015686
@@ -20,40 +20,70 @@
 
 @interface ViewController ()
 
+// Buttons
+- (IBAction)clearTerminalButton:(id)sender;
+- (IBAction)sendButton:(id)sender;
+- (IBAction)backgroundColorButton:(id)sender;
+- (IBAction)textColorButton:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *scanButton;
+@property (strong, nonatomic) IBOutlet UIButton *clearButton;
+@property (strong, nonatomic) IBOutlet UIButton *sendButton;
+@property (strong, nonatomic) IBOutlet UIButton *backgroundButton;
+@property (strong, nonatomic) IBOutlet UIButton *textColorButton;
 
-// bleTerminal Blue B: .976471 R:.015686 G:.270588
+// Main View window.
 @property (strong, nonatomic) IBOutlet UIView *mainView;
+
+// Status bar.
 @property (strong, nonatomic) IBOutlet UIView *topBarView;
+
+// Device View.
 @property (strong, nonatomic) IBOutlet UIView *tableViewContainer;
 @property (strong, nonatomic) IBOutlet UIView *scanForDevicesView;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIView *deviceView;
+
+// RX text boxes.
 @property (strong, nonatomic) IBOutlet UITextView *rxTextView;
 @property (strong, nonatomic) IBOutlet UITextField *sendTextBox;
 @property (strong, nonatomic) IBOutlet UIView *rxTextViewFrame;
-@property (strong, nonatomic) IBOutlet UIButton *clearButton;
-@property (strong, nonatomic) IBOutlet UIButton *sendButton;
 @property (strong, nonatomic) IBOutlet UIView *sendTextFrame;
+
+// Connection Status on the top bar.
 @property (strong, nonatomic) IBOutlet UILabel *connectedLabel;
+
+//Not yet used.
 @property (strong, nonatomic) NSTimer *rssiTimer;
 
+// Class object for the color picker view.
 @property (strong, nonatomic) IBOutlet NKOColorPickerView *pickerView;
 
-- (IBAction)clearTerminalButton:(id)sender;
-- (IBAction)sendButton:(id)sender;
-
+// Number mapping method.
 -(float)mapNumber: (float)x minimumIn:(float)minIn maximumIn:(float)maxIn minimumOut:(float)minOut maximumOut:(float)maxOut;
 
--(id)init;
-
+// Run when app enters background.
 -(void)enteredBackground;
+
+// Run when app is about to terminate.
 -(void)willTerminate;
--(void)updateColor;
+
+// Color scheming methods.
+-(void)updateBackgroundColor;
+-(void)updateTextColor;
+
+// Hides all open windows.
+-(void)hideAllWindows;
 
 @end
 
 @implementation ViewController
+
+// For controlling what items to change color.
+bool textColorFlag = false;
+bool backgroundColorFlag = false;
+UIColor *selectedBackGroundColor;
+UIColor *selectedTextColor;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -78,11 +108,20 @@
     //////////////////////////////////////////////////////////
     
     //Color did change block declaration
-    UIColor *backGroundColor;
-    
+
+
     self.pickerView.didChangeColorBlock = ^(UIColor *color){
-        self.backGroundColor = color;
-        [self updateColor];
+        if (textColorFlag == true) {
+            selectedTextColor = color;
+            [self updateTextColor];
+
+        }
+        else if (backgroundColorFlag == true)
+        {
+            selectedBackGroundColor = color;
+            [self updateBackgroundColor];
+    
+        }
     };
     
 
@@ -145,10 +184,20 @@
     self.clearButton.layer.borderWidth = 1;
     self.clearButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.clearButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
-    [self.connectedLabel setTextColor:backGroundColor];
+
+
+    // Background Button
+    [self.backgroundButton setEnabled:YES ]; // disables
+    [self.backgroundButton setTitle:@"Background" forState:UIControlStateNormal]; // sets text
+    self.backgroundButton.layer.shadowOpacity = 0.5f;
+    self.backgroundButton.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.backgroundButton.layer.shadowRadius = 5.0f;
+    self.backgroundButton.layer.borderWidth = 1;
+    self.backgroundButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.backgroundButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
 
         //self.clearButton.layer. = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
-    
+    //[self.connectedLabel setTextColor:backGroundColor];
     // Setup shadow for Devices TableView.
     self.deviceView.layer.shadowColor = [UIColor blackColor].CGColor;
     self.deviceView.layer.shadowOpacity = 0.5f;
@@ -376,6 +425,7 @@
     
     // Set the background color of the cells.
    // cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:(1) alpha:1];
+
     return cell;
 }
 
@@ -405,6 +455,7 @@
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:1.0];
             [UIView commitAnimations];
+            
             self.deviceView.hidden = true;
         }
     }
@@ -416,21 +467,15 @@
     //Sets the height for each row to 90, the same size as the custom cell.
     return 60;
 }
-- (IBAction)scanButton:(id)sender {
-    if(self.deviceView.hidden == true){
-        self.deviceView.hidden = false;
-    }
-    else
-    {
-       self.deviceView.hidden = true;
-    }
-}
+
 
 - (IBAction)sendButton:(id)sender {
     [self sendValue:self.sendTextBox.text];
     //NSLog(@"%@", self.sendTextBox.text);
     //self.sendTextBox.text = @"";
 }
+
+
 - (IBAction)clearTerminalButton:(id)sender {
     self.rxTextView.text = @"";
     //self.rxTextView.font = [UIFont fontWithName:@"arial" size:40];
@@ -471,22 +516,83 @@
     NSLog(@"Will terminate");
 }
 
--(void)updateColor
+- (IBAction)backgroundColorButton:(id)sender {
+    [self hideAllWindows];
+    
+    if (self.pickerView.hidden == true) {
+        self.pickerView.hidden = false;
+        backgroundColorFlag = true;
+    }
+    else if (self.pickerView.hidden == false)
+    {
+        self.pickerView.hidden = true;
+    }
+    
+}
+
+- (IBAction)textColorButton:(id)sender {
+    [self hideAllWindows];
+    
+    if (self.pickerView.hidden == true) {
+        self.pickerView.hidden = false;
+        textColorFlag = true;
+    }
+    else if (self.pickerView.hidden == false)
+    {
+        self.pickerView.hidden = true;
+    }
+}
+
+- (IBAction)scanButton:(id)sender {
+    [self hideAllWindows];
+    
+    if (self.scanForDevicesView.hidden == true) {
+        self.scanForDevicesView.hidden = false;
+    }
+    else if (self.scanForDevicesView.hidden == false)
+    {
+        self.scanForDevicesView.hidden = true;
+    }
+}
+-(void)hideAllWindows;
 {
-    [self.mainView setBackgroundColor:self.backGroundColor];
-    [self.tableView setBackgroundColor:self.backGroundColor];
+    textColorFlag = false;
+    backgroundColorFlag = false;
+    self.pickerView.hidden = true;
+    self.deviceView.hidden = true;
+}
+
+-(void)updateBackgroundColor
+{
+    [self.mainView setBackgroundColor:selectedBackGroundColor];
+    [self.tableView setBackgroundColor:selectedBackGroundColor];
     [self.tableViewContainer setBackgroundColor:self.backGroundColor];
-    [self.rxTextView setBackgroundColor:self.backGroundColor];
+    [self.rxTextView setBackgroundColor:selectedBackGroundColor];
     [self.rxTextViewFrame setBackgroundColor:self.backGroundColor];
-    [self.clearButton setBackgroundColor:self.backGroundColor];
-    [self.sendButton setBackgroundColor:self.backGroundColor];
-    [self.sendTextBox setBackgroundColor:self.backGroundColor];
-    [self.sendTextFrame setBackgroundColor:self.backGroundColor];
-    [self.sendTextFrame setBackgroundColor:self.backGroundColor];
-    [self.deviceView setBackgroundColor:self.backGroundColor];
-    [self.tableView setBackgroundColor:self.backGroundColor];
-    self.tableView.layer.borderColor = self.backGroundColor.CGColor;
-    self.rxTextViewFrame.layer.borderColor = self.backGroundColor.CGColor;
+    [self.clearButton setBackgroundColor:selectedBackGroundColor];
+    [self.backgroundButton setBackgroundColor:self.backGroundColor];
+    [self.sendButton setBackgroundColor:selectedBackGroundColor];
+    [self.sendTextBox setBackgroundColor:selectedBackGroundColor];
+    [self.sendTextFrame setBackgroundColor:selectedBackGroundColor];
+    [self.sendTextFrame setBackgroundColor:selectedBackGroundColor];
+    [self.deviceView setBackgroundColor:selectedBackGroundColor];
+    [self.tableView setBackgroundColor:selectedBackGroundColor];
+    //self.tableView.layer.borderColor = self.backGroundColor.CGColor;
+    //self.rxTextViewFrame.layer.borderColor = self.backGroundColor.CGColor;
     NSLog(@"%@", self.backGroundColor.CGColor);
+}
+
+-(void)updateTextColor
+{
+    [self.rxTextView setTextColor:selectedTextColor];
+    [self.sendButton setTitleColor:selectedTextColor forState:UIControlStateNormal];
+    [self.textColorButton setTitleColor:selectedTextColor forState:UIControlStateNormal];
+    [self.backgroundButton setTitleColor:selectedTextColor forState:UIControlStateNormal];
+    [self.clearButton setTitleColor:selectedTextColor forState:UIControlStateNormal]; 
+    
+    [self.sendTextBox setTextColor:selectedTextColor];
+    [self.rxTextView setTextColor:selectedTextColor];
+    
+    NSLog(@"NOOO!");
 }
 @end
