@@ -19,18 +19,29 @@
 #define cornerRadiusConst 10.0
 #define openingMessage @"bleTerminal v.05"
 
+// 1. Add window resizing with keyboard.
+// http://stackoverflow.com/questions/1126726/how-to-make-a-uitextfield-move-up-when-keyboard-is-present
+// 2. Add change font size.
+// 3. Add change font.
+
 @interface ViewController ()
+
+
 
 // Buttons
 - (IBAction)clearTerminalButton:(id)sender;
 - (IBAction)sendButton:(id)sender;
 - (IBAction)backgroundColorButton:(id)sender;
 - (IBAction)textColorButton:(id)sender;
+- (IBAction)fontSizeButton:(id)sender;
+- (IBAction)fontStyleButton:(id)sender;
 @property (strong, nonatomic) IBOutlet UIButton *scanButton;
 @property (strong, nonatomic) IBOutlet UIButton *clearButton;
 @property (strong, nonatomic) IBOutlet UIButton *sendButton;
 @property (strong, nonatomic) IBOutlet UIButton *backgroundButton;
 @property (strong, nonatomic) IBOutlet UIButton *textColorButton;
+@property (strong, nonatomic) IBOutlet UIButton *fontSizeButton;
+@property (strong, nonatomic) IBOutlet UIButton *fontStyleButton;
 
 // Main View window.
 @property (strong, nonatomic) IBOutlet UIView *mainView;
@@ -44,8 +55,9 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIView *deviceView;
 
-// Device View Cells
-
+// Font Style and Size.
+@property (strong, nonatomic) IBOutlet UITableView *fontStyle;
+@property (strong, nonatomic) IBOutlet UITableView *fontSize;
 
 
 // RX text boxes.
@@ -88,6 +100,8 @@
 // For controlling what items to change color.
 bool textColorFlag = false;
 bool backgroundColorFlag = false;
+short deviceViewSelector = 0;
+
 UIColor *selectedBackGroundColor;
 UIColor *selectedTextColor;
 
@@ -115,9 +129,10 @@ UIColor *selectedTextColor;
 
     //////////////////////////////////////////////////////////
     
+    selectedBackGroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1];
+    selectedTextColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1];
+    
     //Color did change block declaration
-
-
     self.pickerView.didChangeColorBlock = ^(UIColor *color){
         if (textColorFlag == true) {
             selectedTextColor = color;
@@ -132,7 +147,7 @@ UIColor *selectedTextColor;
         }
     };
     
-
+    
 
     
     //////////////////////////////////////////////////////////
@@ -145,11 +160,10 @@ UIColor *selectedTextColor;
 
     // Table view UI.
     self.tableViewContainer.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
-
     self.tableView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
 
     
-    
+    [self.tableView setBackgroundColor:selectedBackGroundColor];
     // RX text view UI.
     self.rxTextView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
     self.rxTextViewFrame.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
@@ -182,6 +196,7 @@ UIColor *selectedTextColor;
     self.deviceView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
     self.deviceView.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.deviceView.layer.shadowColor = [UIColor blackColor].CGColor;
+
     // Shadow and border.
     self.deviceView.layer.shadowOpacity = 0.5f;
     self.deviceView.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
@@ -189,7 +204,20 @@ UIColor *selectedTextColor;
     self.deviceView.layer.masksToBounds = NO;
     self.deviceView.layer.cornerRadius = cornerRadiusConst;
     self.deviceView.layer.borderWidth = 3;
-
+    [self.tableView setSeparatorColor:[UIColor colorWithRed:textR green:textG blue:textB alpha:1]];
+   
+    // Setup shadow for Pickerview.
+    self.pickerView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    self.pickerView.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
+    self.pickerView.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.pickerView.layer.shadowColor = [UIColor blackColor].CGColor;
+    // Shadow and border.
+    self.pickerView.layer.shadowOpacity = 0.5f;
+    self.pickerView.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.pickerView.layer.shadowRadius = 5.0f;
+    self.pickerView.layer.masksToBounds = NO;
+    self.pickerView.layer.cornerRadius = cornerRadiusConst;
+    self.pickerView.layer.borderWidth = 3;
 
     
     
@@ -245,7 +273,25 @@ UIColor *selectedTextColor;
     self.textColorButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
     self.textColorButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
 
+    // Font Size Button
+    [self.fontSizeButton setEnabled:YES ]; // disables
+    [self.fontSizeButton setTitle:@"Font Size" forState:UIControlStateNormal]; // sets text
+    self.fontSizeButton.layer.shadowOpacity = 0.5f;
+    self.fontSizeButton.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.fontSizeButton.layer.shadowRadius = 5.0f;
+    self.fontSizeButton.layer.borderWidth = 1;
+    self.fontSizeButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.fontSizeButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
     
+    // Font Style Button
+    [self.fontStyleButton setEnabled:YES ]; // disables
+    [self.fontStyleButton setTitle:@"Font Style" forState:UIControlStateNormal]; // sets text
+    self.fontStyleButton.layer.shadowOpacity = 0.5f;
+    self.fontStyleButton.layer.shadowOffset = CGSizeMake(10.0f, 10.0f);
+    self.fontStyleButton.layer.shadowRadius = 5.0f;
+    self.fontStyleButton.layer.borderWidth = 1;
+    self.fontStyleButton.layer.borderColor = [UIColor colorWithRed:textR green:textG blue:textB alpha:1].CGColor;
+    self.fontStyleButton.layer.backgroundColor = [UIColor colorWithRed:bgR green:bgG blue:bgB alpha:1].CGColor;
 
 
     
@@ -406,7 +452,11 @@ UIColor *selectedTextColor;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //This counts how many items are in the deviceList array.
+    if(deviceViewSelector == 0)
+    {
+        //This counts how many items are in the deviceList array.
+    
+    }
     return [self.devices count];
 }
 
@@ -415,89 +465,115 @@ UIColor *selectedTextColor;
 
 - (UITableViewCell *)tableView: (UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    // This gets a sorted array from NSMutableDictionary.
-    NSArray * uuids = [[self.devices allKeys] sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
-        return [obj1 compare:obj2];
-    }];
-    
-    // Setup a devices instance.
-    CBPeripheral * devices = nil;
-    
-    
-    // Go until we run out of devices.
-    if ([indexPath row] < [uuids count])
-    {
-        // Set the peripherals based upon indexPath # from uuids array.
-        devices = [self.devices objectForKey:[uuids objectAtIndex:[indexPath row]]];
-
-    }
-    
-    /////////////////////////LOADS CUSTOM CELL/////////////////////////////
-    
     // This is a handle for the tableView.
     static NSString * bleTerminal = @"bleTerminal";
-    
-    //NSLog(@"%@", bleTerminal);
-    // Get cell objects.;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:bleTerminal];
-    
-    /////////////////////////END/////////////////////////////
-    
-    // List all the devices in the table view.
-    if([indexPath row] < [uuids count]){
-        // Don't list a device if there isn't one.
-        if (devices)
+
+    if(deviceViewSelector == 0)
+    {
+        // This gets a sorted array from NSMutableDictionary.
+        NSArray * uuids = [[self.devices allKeys] sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
+            return [obj1 compare:obj2];
+        }];
+        
+        // Setup a devices instance.
+        CBPeripheral * devices = nil;
+        
+        
+        // Go until we run out of devices.
+        if ([indexPath row] < [uuids count])
         {
-            UILabel *uuidLabel = (UILabel *)[cell.contentView viewWithTag:1];
-            UILabel *deviceLabel = (UILabel *)[cell.contentView viewWithTag:2];
+            // Set the peripherals based upon indexPath # from uuids array.
+            devices = [self.devices objectForKey:[uuids objectAtIndex:[indexPath row]]];
             
-            uuidLabel.text = [devices name];
-            deviceLabel.text = [uuids objectAtIndex:[indexPath row]];
         }
+        
+        /////////////////////////LOADS CUSTOM CELL/////////////////////////////
+        
+
+        
+        //NSLog(@"%@", bleTerminal);
+        
+        // Get cell objects.;
+
+        
+        /////////////////////////END/////////////////////////////
+        
+        [cell setBackgroundColor:selectedBackGroundColor];
+        [cell.contentView setBackgroundColor:selectedBackGroundColor];
+        
+        // List all the devices in the table view.
+        if([indexPath row] < [uuids count]){
+            // Don't list a device if there isn't one.
+            if (devices)
+            {
+                UILabel *uuidLabel = (UILabel *)[cell.contentView viewWithTag:1];
+                UILabel *deviceLabel = (UILabel *)[cell.contentView viewWithTag:2];
+                [uuidLabel setBackgroundColor:selectedBackGroundColor];
+                [deviceLabel setBackgroundColor:selectedBackGroundColor];
+                [uuidLabel setTextColor:selectedTextColor];
+                [deviceLabel setTextColor:selectedTextColor];
+                uuidLabel.text = [devices name];
+                deviceLabel.text = [uuids objectAtIndex:[indexPath row]];
+            }
+        }
+        
+        // Add image on the left of each cell.
+        // cell.  image = [UIImage imageNamed:@"oshw-logo-black.png"];
+        // Sets background color for the cells.  Alpha = opacity.  Float, 0-1.
+        // Will be used for device distance indication.  Let's have it as a base int.
+        
+        // Set the background color of the cells.
+        // cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:(1) alpha:1];
+        
+
+    }
+    else if(deviceViewSelector == 1)
+    {
+        NSLog(@"Text");
     }
     
-    // Add image on the left of each cell.
-   // cell.  image = [UIImage imageNamed:@"oshw-logo-black.png"];
-    // Sets background color for the cells.  Alpha = opacity.  Float, 0-1.
-    // Will be used for device distance indication.  Let's have it as a base int.
-    
-    // Set the background color of the cells.
-   // cell.backgroundColor = [UIColor colorWithRed:1 green:1 blue:(1) alpha:1];
-
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Create a sorted array of the found UUIDs.
-    NSArray * uuids = [[self.devices allKeys] sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
-        return [obj1 compare:obj2];
-    }];
-    
-    // Only get enough devices or listed cells.
-    if ([indexPath row] < [uuids count])
+    if(deviceViewSelector == 0)
     {
-        // Set the peripheral based upon the indexPath; uuid being the array.
-        _selectedPeripheral = [self.devices objectForKey:[uuids objectAtIndex:[indexPath row]]];
+        // Create a sorted array of the found UUIDs.
+        NSArray * uuids = [[self.devices allKeys] sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
+            return [obj1 compare:obj2];
+        }];
         
-        // If there is a peripheral.
-        if (_selectedPeripheral)
+        // Only get enough devices or listed cells.
+        if ([indexPath row] < [uuids count])
         {
-            // Close current connection.
-            [self disconnectPeripheral];
+            // Set the peripheral based upon the indexPath; uuid being the array.
+            _selectedPeripheral = [self.devices objectForKey:[uuids objectAtIndex:[indexPath row]]];
             
-            // Connect to selected peripheral.
-            [_centralManager connectPeripheral:_selectedPeripheral options:nil];
-            // Hide the devices list.
-            [UIView beginAnimations:@"fade in" context:nil];
-            [UIView setAnimationDuration:1.0];
-            [UIView commitAnimations];
-            
-            self.deviceView.hidden = true;
+            // If there is a peripheral.
+            if (_selectedPeripheral)
+            {
+                // Close current connection.
+                [self disconnectPeripheral];
+                
+                // Connect to selected peripheral.
+                [_centralManager connectPeripheral:_selectedPeripheral options:nil];
+                // Hide the devices list.
+                [UIView beginAnimations:@"fade in" context:nil];
+                [UIView setAnimationDuration:1.0];
+                [UIView commitAnimations];
+                
+                self.deviceView.hidden = true;
+            }
         }
     }
+    else if(deviceViewSelector == 1)
+    {
+        NSLog(@"Text");
+    }
+ 
 }
 
 
@@ -582,7 +658,7 @@ UIColor *selectedTextColor;
 
 - (IBAction)scanButton:(id)sender {
 
-    
+    deviceViewSelector = 0;
     if (self.scanForDevicesView.hidden == true && self.pickerView.hidden == true) {
         self.scanForDevicesView.hidden = false;
     }
@@ -603,6 +679,7 @@ UIColor *selectedTextColor;
 
 -(void)updateBackgroundColor
 {
+    [self.tableViewContainer setBackgroundColor:selectedBackGroundColor];
     [self.mainView setBackgroundColor:selectedBackGroundColor];
     [self.tableView setBackgroundColor:selectedBackGroundColor];
     [self.tableViewContainer setBackgroundColor: selectedBackGroundColor];
@@ -617,6 +694,16 @@ UIColor *selectedTextColor;
     [self.sendTextFrame setBackgroundColor:selectedBackGroundColor];
     [self.deviceView setBackgroundColor:selectedBackGroundColor];
     [self.tableView setBackgroundColor:selectedBackGroundColor];
+    [self.menuView setBackgroundColor:selectedBackGroundColor];
+    [self.pickerView setBackgroundColor:selectedBackGroundColor];
+    [self.fontSizeButton setBackgroundColor:selectedBackGroundColor];
+    [self.fontStyleButton setBackgroundColor:selectedBackGroundColor];
+    
+    self.tableViewContainer.layer.backgroundColor = (selectedBackGroundColor).CGColor;
+    self.tableView.layer.backgroundColor = (selectedBackGroundColor).CGColor;
+    [self.tableView reloadData];
+
+    
 }
 
 -(void)updateTextColor
@@ -634,4 +721,20 @@ UIColor *selectedTextColor;
     }
     
 }
+- (IBAction)fontSizeButton:(id)sender {
+    deviceViewSelector = 1;
+    [self.tableView reloadData];
+    if (self.scanForDevicesView.hidden == true && self.pickerView.hidden == true) {
+        self.scanForDevicesView.hidden = false;
+    }
+    else if (self.scanForDevicesView.hidden == false)
+    {
+        [self hideAllWindows];;
+    }
+    
+}
+
+- (IBAction)fontStyleButton:(id)sender {
+}
+
 @end
